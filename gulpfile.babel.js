@@ -38,13 +38,19 @@ gulp.task('compile', () => {
   .pipe(gulp.dest(dirs.dest));
 });
 
+// server
+gulp.task('server', () => {
+  // TODO
+});
+
 // watch
 gulp.task('watch', () => {
   // TODO
 });
 
 // combined tasks
-gulp.task('build',   ['copy-assets', 'compile']);
+gulp.task('s', ['server']);
+gulp.task('build', ['copy-assets', 'compile']);
 gulp.task('rebuild', ['clean', 'build']);
 gulp.task('default', ['watch']);
 
