@@ -5,6 +5,7 @@ import clean      from 'gulp-rimraf';
 import browserify from 'browserify';
 import babelify   from 'babelify';
 import source     from 'vinyl-source-stream';
+import sync       from 'browser-sync';
 
 const dirs = {
   src: 'source',
@@ -32,25 +33,27 @@ gulp.task('copy-assets', () => {
 // compile js file
 gulp.task('compile', () => {
   return browserify(`./${dirs.src}/app.js`)
-  .transform(babelify)
-  .bundle()
-  .pipe(source('app.js'))
-  .pipe(gulp.dest(dirs.dest));
+          .transform(babelify)
+          .bundle()
+          .pipe(source('app.js'))
+          .pipe(gulp.dest(dirs.dest))
+          .pipe(sync.reload({stream: true}));
 });
 
-// server
-gulp.task('server', () => {
-  // TODO
+// browser sync
+gulp.task('browser-sync', function() {
+  sync({
+    server: {baseDir: dirs.dest},
+  })
 });
 
 // watch
-gulp.task('watch', () => {
-  // TODO
+gulp.task('watch', ['browser-sync', 'compile'], () => {
+  gulp.watch(`./${dirs.src}/*.js`, ['compile']);
 });
 
 // combined tasks
-gulp.task('s', ['server']);
 gulp.task('build', ['copy-assets', 'compile']);
 gulp.task('rebuild', ['clean', 'build']);
-gulp.task('default', ['watch']);
+gulp.task('default', ['build']);
 
